@@ -1,6 +1,7 @@
 linux_ver = 6.7.6
 linux_ver_grp = 6
 busybox_ver = 1.36.1
+dpkg_ver = 1.22.5ubuntu4
 
 workdir = workdir
 builddir = $(workdir)/build
@@ -27,17 +28,23 @@ $(sourcesdir)/busybox-$(busybox_ver): workdir # download busybox
 	wget -P $(dldir) https://busybox.net/downloads/busybox-$(busybox_ver).tar.bz2
 	tar -xjvf $(dldir)/busybox-$(busybox_ver).tar.bz2 -C $(sourcesdir)
 
+$(builddir)/dpkg_data/data.tar.xz: workdir # download dpkg
+	wget -P $(dldir) http://security.ubuntu.com/ubuntu/pool/main/d/dpkg/dpkg_$(dpkg_ver)_amd64.deb
+	mkdir $(builddir)/dpkg_data
+	ar -x $(dldir)/dpkg* data.tar.xz --output $(builddir)/dpkg_data
+
 $(sourcesdir)/busybox-$(busybox_ver)/busybox: $(sourcesdir)/busybox-$(busybox_ver) # build busybox
 	$(MAKE) -C $(sourcesdir)/busybox-$(busybox_ver) defconfig
 	$(MAKE) -j4 -C $(sourcesdir)/busybox-$(busybox_ver) LDFLAGS=-static
 
-$(linuxdir)/initrd-busybox-$(busybox_ver).img: $(sourcesdir)/busybox-$(busybox_ver)/busybox # build initrd
+$(linuxdir)/initrd-busybox-$(busybox_ver).img: $(sourcesdir)/busybox-$(busybox_ver)/busybox $(builddir)/dpkg_data/data.tar.xz # build initrd
 	mkdir -p $(builddir)/initrd
 	cp files/init $(builddir)/initrd
 	chmod 777 $(builddir)/initrd/init
 	mkdir -p $(builddir)/initrd/bin $(builddir)/initrd/dev $(builddir)/initrd/proc $(builddir)/initrd/sys
+	tar xvf $(builddir)/dpkg_data/data.tar.xz -C $(builddir)/initrd
 	cp $(sourcesdir)/busybox-$(busybox_ver)/busybox $(builddir)/initrd/bin
-	(cd $(builddir)/initrd/bin; for prog in $$(./busybox --list); do ln -s /bin/busybox $$prog; done)
+	(cd $(builddir)/initrd/bin; for prog in $$(./busybox --list); do ln -sf /bin/busybox $$prog; done)
 	(cd $(builddir)/initrd; find . | cpio -o -H newc) > $(linuxdir)/initrd-busybox-$(busybox_ver).img
 
 
@@ -63,4 +70,3 @@ test: buildlinux buildinitrd # test in qemu
 
 clean:
 	rm -r $(workdir)
-
