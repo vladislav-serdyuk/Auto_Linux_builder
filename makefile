@@ -31,7 +31,7 @@ $(sourcesdir)/busybox-$(busybox_ver)/busybox: $(sourcesdir)/busybox-$(busybox_ve
 	$(MAKE) -C $(sourcesdir)/busybox-$(busybox_ver) defconfig
 	$(MAKE) -j4 -C $(sourcesdir)/busybox-$(busybox_ver) LDFLAGS=-static
 
-$(linuxdir)/initrd-busybox-$(busybox_ver).img: $(sourcesdir)/busybox-$(busybox_ver)/busybox $(builddir)/dpkg_data/data.tar.xz # build initrd
+$(linuxdir)/initrd-busybox-$(busybox_ver).img: $(sourcesdir)/busybox-$(busybox_ver)/busybox # build initrd
 	mkdir -p $(builddir)/initrd
 	cp files/init $(builddir)/initrd
 	chmod 777 $(builddir)/initrd/init
