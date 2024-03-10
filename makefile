@@ -43,6 +43,7 @@ $(linuxdir)/initrd-busybox-$(busybox_ver).img: $(sourcesdir)/busybox-$(busybox_v
 	chmod 777 $(builddir)/initrd/init
 	mkdir -p $(builddir)/initrd/bin $(builddir)/initrd/dev $(builddir)/initrd/proc $(builddir)/initrd/sys
 	tar xvf $(builddir)/dpkg_data/data.tar.xz -C $(builddir)/initrd
+	touch $(builddir)/initrd/var/lib/dpkg/status
 	cp $(sourcesdir)/busybox-$(busybox_ver)/busybox $(builddir)/initrd/bin
 	(cd $(builddir)/initrd/bin; for prog in $$(./busybox --list); do ln -sf /bin/busybox $$prog; done)
 	(cd $(builddir)/initrd; find . | cpio -o -H newc) > $(linuxdir)/initrd-busybox-$(busybox_ver).img
