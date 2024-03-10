@@ -36,4 +36,3 @@
 ## Использованое ПО
 - Linux © Linus Torvalds GNU GPL
 - Busybox © 1999-2008 Erik Andersen
-- dpkg © The Debian GNU GPL
