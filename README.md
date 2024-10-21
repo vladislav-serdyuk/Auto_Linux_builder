@@ -3,19 +3,27 @@
 
 ## Главное
 
-Перед шаманством установите make:
-> sudo apt install make
+Перед шаманством установите make
+```
+sudo apt install make
+```
 
 Далее, после скачивания вот этого чуда с github, перейдите в папку распоковки.
 После чего введите:
-> sudo make build
+```
+sudo make build
+```
 
 или
-> sudo make -jN build
+```
+sudo make -jN build
+```
 
 Где вместо N можно поставить 1, 2, 3, ... подробнее в мануалах GNU make.
 Для проверки дистрибутива введите:
-> make test
+```
+make test
+```
 
 ## Допольнительно
 
@@ -24,7 +32,9 @@
 отдельно собрать ядро 'make buildlinux', busybox 'make buildbusybox', и initrd 'make buildinitrd'.
 
 Используйте это для удаления всех созданных файлов:
-> make clean
+```
+make clean
+```
 
 'make build' выполняет сначала libinstall после чего buildall,
 поэтому в следущий раз используйте имено 'make buildall'
